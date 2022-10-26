@@ -143,7 +143,7 @@ behaviors:
 
 ## Задание 2
 ### Сделать описание конфигурационного [файла](https://github.com/VenchasS/DA-in-GameDev-lab3/blob/main/rollerball_config.yaml)
- ```yaml
+```yaml
  behaviors: 
   RollerBall: #Behaviour Name из компоненты Behaviour Parameters
     trainer_type: ppo #тип тренировки ppo (Proximal Policy Optimization)
@@ -167,19 +167,90 @@ behaviors:
     max_steps: 500000 #максимальное количество итераций
     time_horizon: 64 #Сколько шагов опыта нужно собрать для каждого агента, прежде чем добавлять его в буфер опыта.
     summary_freq: 10000 #Количество опыта, которое необходимо собрать перед созданием и отображением статистики обучения.
-    ```
+```
 
 
 ## Задание 3
-### 
-Был переписан скрипт из 1 задания для подгрузки данных об `A, B, LOSS` из гугл таблицы
-После чего в зависимости от `LOSS` проигрывался звук:
-`LOSS > 1500 = Badaudio` , `LOSS <= 1500 && LOSS > 500 = Noramlaudio` , `LOSS <= 500 = Goodaudio`
-Результат работы скрипта:
-![Screenshot_7](https://user-images.githubusercontent.com/49115035/194932829-a433dbd6-38dc-40ed-abe3-095220b5fa20.png)
+### Доработайте сцену и обучите ML-Agent таким образом, чтобы шар
+перемещался между двумя кубами разного цвета. Кубы должны, как и в первом
+задании, случайно изменять координаты на плоскости.
 
-ссылка на [скрипт](https://github.com/VenchasS/DA-in-GameDev-lab2/blob/main/NewBehaviourScript2.cs)
+Был изменен прошлый [скрипт](https://github.com/VenchasS/DA-in-GameDev-lab3/blob/main/RollerAgent.cs) и код стал следующим
+```css
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using Unity.MLAgents;
+using Unity.MLAgents.Sensors;
+using Unity.MLAgents.Actuators;
+
+public class RollerAgent : Agent
+{
+    Rigidbody rBody;
+    // Start is called before the first frame update
+    void Start()
+    {
+        rBody = GetComponent<Rigidbody>();
+    }
+
+    public Transform Target;
+    public Transform Target2;
+
+    public override void OnEpisodeBegin()
+    {
+        if (this.transform.localPosition.y < 0)
+        {
+            this.rBody.angularVelocity = Vector3.zero;
+            this.rBody.velocity = Vector3.zero;
+            this.transform.localPosition = new Vector3(0, 0.5f, 0);
+        }
+
+        Target.localPosition = new Vector3(Random.value * 8 - 4, 0.5f, Random.value * 8 - 4);
+        Target2.localPosition = new Vector3(Random.value * 8 - 4, 0.5f, Random.value * 8 - 4);
+    }
+    public override void CollectObservations(VectorSensor sensor)
+    {
+        sensor.AddObservation(Target.localPosition);
+        sensor.AddObservation(Target2.localPosition);
+        sensor.AddObservation(this.transform.localPosition);
+        sensor.AddObservation(rBody.velocity.x);
+        sensor.AddObservation(rBody.velocity.z);
+    }
+    public float forceMultiplier = 10;
+    public override void OnActionReceived(ActionBuffers actionBuffers)
+    {
+        Vector3 controlSignal = Vector3.zero;
+        controlSignal.x = actionBuffers.ContinuousActions[0];
+        controlSignal.z = actionBuffers.ContinuousActions[1];
+        rBody.AddForce(controlSignal * forceMultiplier);
+
+        float distanceToTarget = Vector3.Distance(this.transform.localPosition, Target.localPosition);
+        float distanceToTarget2 = Vector3.Distance(this.transform.localPosition, Target2.localPosition);
+        float distanceBetween = Vector3.Distance(Target.localPosition, Target2.localPosition) / 2;
+
+
+        if(distanceToTarget > distanceToTarget2 - 0.4 && distanceToTarget < distanceToTarget2 + 0.4 && distanceToTarget2 < distanceBetween + 0.4)
+        {
+            SetReward(1.0f);
+            EndEpisode();
+        }
+        else if (this.transform.localPosition.y < 0)
+        {
+            EndEpisode();
+        }
+    }
+}
+```
+
+после ```110 000 steps ``` шар хорошо научился двигаться в центр между кубами, и в случае когда у него не получалось встать между кубами он пытается слететь с арены
+
+
+Ниже приведен пример работы, gif
+![4](https://user-images.githubusercontent.com/49115035/198097247-84f5d66c-41d8-4320-9805-43043c2a9273.gif)
+
+
 ## Выводы
-Я научился подгружать и загружать данные из гугл таблиц при помощи связки python , C#
+В ходе лабораторной работы я научился подключать ml agenta, создавать системы машинного обучения и интегрировать ее с Unity.
+
 
 
