@@ -102,7 +102,7 @@ public class RollerAgent : Agent
     }
 }
 ```
-Затем у сверы были настроенны компоненты ```Decision Requester, Behavior Parameters``` и добавлен файл конфигурации нейронной сети
+Затем у сверы были настроенны компоненты ```Decision Requester, Behavior Parameters``` и добавлен [файл](https://github.com/VenchasS/DA-in-GameDev-lab3/blob/main/rollerball_config.yaml) конфигурации нейронной сети
 ```yaml
 behaviors:
   RollerBall:
@@ -128,6 +128,8 @@ behaviors:
     time_horizon: 64
     summary_freq: 10000
 ```
+после чего был запущен ml agent из anacond prompt
+![2022-10-26-20-13-47](https://user-images.githubusercontent.com/49115035/198072629-7f8452af-baf0-4bae-a9d8-76042611bf73.gif)
 
 
 ## Задание 2
