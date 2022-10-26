@@ -102,7 +102,7 @@ public class RollerAgent : Agent
     }
 }
 ```
-Затем у сверы были настроенны компоненты ```Decision Requester, Behavior Parameters``` и добавлен [файл](https://github.com/VenchasS/DA-in-GameDev-lab3/blob/main/rollerball_config.yaml) конфигурации нейронной сети
+Затем у сферы были настроенны компоненты ```Decision Requester, Behavior Parameters``` и добавлен [файл](https://github.com/VenchasS/DA-in-GameDev-lab3/blob/main/rollerball_config.yaml) конфигурации нейронной сети
 ```yaml
 behaviors:
   RollerBall:
@@ -135,11 +135,11 @@ behaviors:
 Далее тренировка была запущенна сразу на 9 копий, ниже предоставленно gif
 ![2](https://user-images.githubusercontent.com/49115035/198074291-e3813dfb-ceea-4389-a264-9fda656308ba.gif)
 
-И соответственно на 27 копий, ниже предосталвенная gif
+И соответственно на 27 копий, ниже предоставленно gif
 ![3](https://user-images.githubusercontent.com/49115035/198075173-174d5d46-23d5-4512-a0a8-fd88e68ab0c8.gif)
 
 
-После ```60.000 step``` сферы стали достаточно плавно и точно перемещаться к цели
+После ```60.000 step``` сферы стали достаточно плавно и точно перемещаться к цели по кратчайшему маршруту
 
 ## Задание 2
 ### Сделать описание конфигурационного [файла](https://github.com/VenchasS/DA-in-GameDev-lab3/blob/main/rollerball_config.yaml)
@@ -242,7 +242,7 @@ public class RollerAgent : Agent
 }
 ```
 
-после ```110 000 steps ``` шар хорошо научился двигаться в центр между кубами, и в случае когда у него не получалось встать между кубами он пытается слететь с арены
+после ```110 000 steps ``` шар хорошо научился двигаться в центр между кубами, и в случае когда у него не получалось встать между кубами из-за того что кубы появились слишком близко он пытается слететь с арены
 
 
 Ниже приведен пример работы, gif
