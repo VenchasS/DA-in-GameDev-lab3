@@ -43,7 +43,7 @@
 
 В проекте были созданны сфера, плоскость и куб
 
-Для сферы был написан C# скрипт
+Для сферы был написан C# [скрипт](https://github.com/VenchasS/DA-in-GameDev-lab3/blob/main/RollerAgent.cs)
 ```css
 using System.Collections;
 using System.Collections.Generic;
