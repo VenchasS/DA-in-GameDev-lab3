@@ -128,7 +128,7 @@ behaviors:
     time_horizon: 64
     summary_freq: 10000
 ```
-после чего был запущен ml agent из anacond prompt
+после чего был запущен ml agent из anacond prompt, ниже предоставленно gif с результатом работы проекта(нажмите для проигрывания)
 ![2022-10-26-20-13-47](https://user-images.githubusercontent.com/49115035/198072629-7f8452af-baf0-4bae-a9d8-76042611bf73.gif)
 
 
