@@ -1,5 +1,5 @@
 # АНАЛИЗ ДАННЫХ И ИСКУССТВЕННЫЙ ИНТЕЛЛЕКТ [in GameDev]
-Отчет по лабораторной работе #1 выполнил(а):
+Отчет по лабораторной работе #3 выполнил(а):
 - Безбородов Вениамин Васильевич
 - РИ210940
 Отметка о выполнении заданий (заполняется студентом):
@@ -17,9 +17,6 @@
 - к.э.н., доцент Панов М.А.
 - ст. преп., Фадеев В.О.
 
-[![N|Solid](https://cldup.com/dTxpPi9lDf.thumb.png)](https://nodesource.com/products/nsolid)
-
-[![Build Status](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://travis-ci.org/joemccann/dillinger)
 
 Структура отчета
 
@@ -32,25 +29,80 @@
 - Задание 3.
 - Код реализации выполнения задания. Визуализация результатов выполнения (если применимо).
 - Выводы.
-- ✨Magic ✨
+
 
 ## Цель работы
-Ознакомиться с основными операторами зыка Python на примере реализации линейной регрессии.
+познакомиться с программными средствами для создания
+системы машинного обучения и ее интеграции в Unity.
 
 ## Задание 1
-### Реализовать совместную работу и передачу данных в связке Python - Google-Sheets – Unity.
+### Реализовать систему машинного обучения в связке Python - Google-Sheets – Unity.
 Ход работы:
-Создал google таблицу и добавил пользователя
-Написал python код для записи в гугл таблицу [main.py](https://github.com/VenchasS/DA-in-GameDev-lab2/blob/main/main.py)
-Результаты выполнения:
-![Screenshot_1](https://user-images.githubusercontent.com/49115035/194918551-c545e14b-6c10-48f6-9be3-1155eb066163.png)
-![Screenshot_2](https://user-images.githubusercontent.com/49115035/194918607-99d9abec-7406-4692-ba25-8580593b1f6f.png)
+Был создан пустой 3D проект на Unity, к ней был подключен ML Agent
+Далее при помощи anaconda prompt били скачаны ```mlagents, torch```
 
-После этого был написанн C# скрипт для юнити чтобы подгрузить данные из гугл таблиц в юнити 
-и связать это с звуком в зависимости от данных
-Сам C# [скрипт](https://github.com/VenchasS/DA-in-GameDev-lab2/blob/main/NewBehaviourScript.cs)
-Результаты выполнения скрипта
-![Screenshot_3](https://user-images.githubusercontent.com/49115035/194919147-f8ee87e2-518b-4894-a47e-a995fab3b18e.png)
+В проекте были созданны сфера, плоскость и куб
+
+Для сферы был написан C# скрипт
+```css
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using Unity.MLAgents;
+using Unity.MLAgents.Sensors;
+using Unity.MLAgents.Actuators;
+
+public class RollerAgent : Agent
+{
+    Rigidbody rBody;
+    // Start is called before the first frame update
+    void Start()
+    {
+        rBody = GetComponent<Rigidbody>();
+    }
+
+    public Transform Target;
+    public override void OnEpisodeBegin()
+    {
+        if (this.transform.localPosition.y < 0)
+        {
+            this.rBody.angularVelocity = Vector3.zero;
+            this.rBody.velocity = Vector3.zero;
+            this.transform.localPosition = new Vector3(0, 0.5f, 0);
+        }
+
+        Target.localPosition = new Vector3(Random.value * 8 - 4, 0.5f, Random.value * 8 - 4);
+    }
+    public override void CollectObservations(VectorSensor sensor)
+    {
+        sensor.AddObservation(Target.localPosition);
+        sensor.AddObservation(this.transform.localPosition);
+        sensor.AddObservation(rBody.velocity.x);
+        sensor.AddObservation(rBody.velocity.z);
+    }
+    public float forceMultiplier = 10;
+    public override void OnActionReceived(ActionBuffers actionBuffers)
+    {
+        Vector3 controlSignal = Vector3.zero;
+        controlSignal.x = actionBuffers.ContinuousActions[0];
+        controlSignal.z = actionBuffers.ContinuousActions[1];
+        rBody.AddForce(controlSignal * forceMultiplier);
+
+        float distanceToTarget = Vector3.Distance(this.transform.localPosition, Target.localPosition);
+
+        if (distanceToTarget < 1.42f)
+        {
+            SetReward(1.0f);
+            EndEpisode();
+        }
+        else if (this.transform.localPosition.y < 0)
+        {
+            EndEpisode();
+        }
+    }
+}
+```
+
 
 ## Задание 2
 ### Сделать подгрузку результатов 1 лабы в гугл таблицы.
